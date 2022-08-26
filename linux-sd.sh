@@ -60,6 +60,15 @@ else
     wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P ./stable-diffusion/src/gfpgan/experiments/pretrained_models
 fi
 
+# Check to see if realESRGAN has been added yet, if not it will download it and place it in the proper directory
+if [ -f "./stable-diffusion/src/realesrgan/experiments/pretrained_models/RealESRGAN_x4plus.pth" ]; then
+    echo "realESRGAN already exists. Continuing..."
+else
+    echo "Downloading realESRGAN model. Please wait..."
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P ./stable-diffusion/src/realesrgan/experiments/pretrained_models
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P ./stable-diffusion/src/realesrgan/experiments/pretrained_models
+fi
+
 # Checks to see if the main Linux bash script exists in the stable-diffusion repo.
 # If it does, it executes using bash in interactive mode due to issues with conda activation
 # If it does not exist, it generates the file and makes it executable
