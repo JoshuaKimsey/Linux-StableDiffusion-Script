@@ -5,5 +5,5 @@ Please see my guide for running this on Linux: https://rentry.org/linux-sd
 
 TO-DO:
 
-- Add ability to update Stable DIffusion without having to manually delete the core folder.
+- [x] Add ability to update Stable DIffusion without having to manually delete the core folder.
 - Possibly add a way to setup the base Optimized Stable Diffusion for those that truly need the lower VRAM limits.
