@@ -18,7 +18,13 @@ echo "Please refer to the original guide for more info and additional links for 
 # Check to see if SD repo is cloned
 # This currently uses the fork by hlky, may be changed to main Optimized SD fork later on
 if [ -d "./stable-diffusion" ]; then
-    echo "Optimized StableDiffusion already exists. Continuing..."
+    echo "Optimized StableDiffusion already exists. Do you want to update Stable Diffusion?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) echo "Cloning Optimized StableDiffusion. Please wait..."; cd stable-diffusion; git pull; conda env update --file environment.yaml --prune; cd ..; break;;
+            No ) echo "Stable Diffusion will not be updated. Continuing..."; break;;
+        esac
+    done
 else
     echo "Cloning Optimized StableDiffusion. Please wait..."
     git clone https://github.com/hlky/stable-diffusion
@@ -80,7 +86,7 @@ else
     echo "Generating linux-setup.sh in ./stable-diffusion"
     touch ./stable-diffusion/linux-setup.sh
     chmod +x ./stable-diffusion/linux-setup.sh
-    printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate ldo\n\n\n##### PYTHON HANDLING #####\n\n#Check to see if model exists in the correct location with the correct name, exit if it does not.\npython scripts/relauncher.py" >> ./stable-diffusion/linux-setup.sh
+    printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\n#Check to see if model exists in the correct location with the correct name, exit if it does not.\npython scripts/relauncher.py" >> ./stable-diffusion/linux-setup.sh
     echo "Running linux-setup.sh..."
     cd stable-diffusion
     bash -i ./linux-setup.sh
