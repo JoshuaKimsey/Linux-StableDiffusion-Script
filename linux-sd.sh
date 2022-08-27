@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Linux Stable Diffusion Script
+
+# Version: 1.2
+
 #MIT License
 
 #Copyright (c) 2022 Joshua Kimsey
