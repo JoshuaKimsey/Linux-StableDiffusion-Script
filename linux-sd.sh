@@ -2,15 +2,15 @@
 
 # Linux Stable Diffusion Script
 
-# Version: 1.4
+# Version: 1.5
 
-#MIT License
+# MIT License
 
-#Copyright (c) 2022 Joshua Kimsey
+# Copyright (c) 2022 Joshua Kimsey
 
 ##### Please See My Guide For Running This Script Here: https://rentry.org/linux-sd #####
 
-#Confirmed working as of August 27th, 2022. May be subject to breakage at a later date due to bleeding-edge updates in the StableDiffusion fork repo
+# Confirmed working as of August 29th, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
 # Please see my GitHub gist for updates on this script: 
 
 printf "\n\n\n"
@@ -24,8 +24,8 @@ echo "Please refer to the original guide for more info and additional links for 
 printf "\n\n"
 
 
-# Function to install and run the Ultimate Stable Diffusion fork
-function ultimate_stable_diffusion {
+
+ultimate_stable_diffusion_repo () {
     # Check to see if Ultimate Stable Diffusion repo is cloned
     if [ -d "./ultimate-stable-diffusion" ]; then
         printf "\n\n########## CHECK FOR UPDATES ##########\n\n"
@@ -41,10 +41,14 @@ function ultimate_stable_diffusion {
         git clone https://github.com/hlky/stable-diffusion
         mv stable-diffusion ultimate-stable-diffusion
     fi
+}
 
+sd_model_loading () {
     # Check to see if the 1.4 model already exists, if not then it creates it and prompts the user to add the 1.4 AI models to the Models directory
     if [ -f "./ultimate-stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt" ]; then
-        echo "AI Model already in place. Continuing..."
+        echo "AI Model already in place."
+        # Will be enabled once new AI Models are released
+        #sd_model_update
     else 
         mkdir Models
 
@@ -55,7 +59,21 @@ function ultimate_stable_diffusion {
         mv ./Models/sd-v1-4.ckpt ./ultimate-stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt
         rm -r ./Models
     fi
+}
 
+sd_model_update () {
+    printf "\n\n########## Update Stable Diffusion Models ##########\n\n"
+    echo "Do you wish to load a new/different Stable Diffusion AI Model?"
+    echo "Warning: This will DELETE the pre-existing model.ckpt present in Ultimate Stable Diffusion!"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) echo "Preparing for new AI Model loading. Please wait..."; break;;
+            No ) echo "Stable Diffusion AI model will not be updated. Continuing..."; break;;
+        esac
+    done
+}
+
+conda_env_setup () {
     # Checks to see if the appropriate conda environment has been setup.
     # If the environment hasn't been created yet, it will do so under the name "lsd" (Yes, I'm fully aware of that letter choice ;) )
     if [ -d "./ultimate-stable-diffusion/src" ]; then
@@ -71,7 +89,9 @@ function ultimate_stable_diffusion {
         sed -i 's/ldm/lsd/g' ./ultimate-stable-diffusion/environment.yaml
         conda env create -f ./ultimate-stable-diffusion/environment.yaml
     fi
+}
 
+post_processor_model_loading () {
     # Check to see if GFPGAN has been added yet, if not it will download it and place it in the proper directory
     if [ -f "./ultimate-stable-diffusion/src/gfpgan/experiments/pretrained_models/GFPGANv1.3.pth" ]; then
         echo "GFPGAN already exists. Continuing..."
@@ -88,7 +108,9 @@ function ultimate_stable_diffusion {
         wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P ./ultimate-stable-diffusion/src/realesrgan/experiments/pretrained_models
         wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P ./ultimate-stable-diffusion/src/realesrgan/experiments/pretrained_models
     fi
+}
 
+linux_setup_script () {
     # Checks to see if the main Linux bash script exists in the stable-diffusion repo.
     # If it does, it executes using bash in interactive mode due to issues with conda activation
     # If it does not exist, it generates the file and makes it executable
@@ -145,11 +167,31 @@ ultimate_stable_diffusion_mode () {
     fi
 }
 
+# Function to install and run the Ultimate Stable Diffusion fork
+function ultimate_stable_diffusion {
+    if [ $1 = "initial" ]; then
+        ultimate_stable_diffusion_repo
+        sd_model_loading
+        conda_env_setup
+        post_processor_model_loading
+        linux_setup_script
+    else
+        printf "\n\n########## RUN PREVIOUS SETUP ##########\n\n"
+        echo "Do you wish to run Ultimate Stable DIffusion with the previous parameters?"
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) echo "Starting Ultimate Stable Diffusion using previous parameters. Please wait..."; linux_setup_script; break;;
+                No ) echo "Beginning customization of Ultimate Stable Diffusion..."; ultimate_stable_diffusion_repo; sd_model_loading; conda_env_setup; post_processor_model_loading; linux_setup_script; break;;
+            esac
+        done
+    fi
+}
+
 # Initialization 
 if [ ! -d "./ultimate-stable-diffusion" ]; then
     echo "Starting Ultimate Stable Diffusion installation..."
     printf "\n"
-    ultimate_stable_diffusion
+    ultimate_stable_diffusion initial
 else
     ultimate_stable_diffusion
 fi
