@@ -10,7 +10,7 @@
 
 ##### Please See My Guide For Running This Script Here: https://rentry.org/linux-sd #####
 
-# Confirmed working as of August 31th, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
+# Confirmed working as of September 1st, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
 # Please see my GitHub gist for updates on this script: 
 
 printf "\n\n\n"
