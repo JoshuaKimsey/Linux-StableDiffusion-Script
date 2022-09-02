@@ -67,6 +67,7 @@ sd_model_loading () {
         echo "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models"
         read -p "Once you have sd-v1-4.ckpt in the Models directory, Press Enter..."
 
+        echo "fe4efff1e174c627256e44ec2991ba279b3816e364b49f9be2abc0b3ff3f8556 ./Models/sd-v1-4.ckpt" | sha256sum --check || exit 1
         mv ./Models/sd-v1-4.ckpt $DIRECTORY/models/ldm/stable-diffusion-v1/model.ckpt
         rm -r ./Models
     fi
