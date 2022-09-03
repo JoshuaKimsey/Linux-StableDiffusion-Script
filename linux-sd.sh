@@ -2,7 +2,7 @@
 
 # Linux Stable Diffusion Script
 
-# Version: 1.7
+# Version: 1.7.1
 
 # MIT License
 
@@ -30,6 +30,7 @@ ultimate_stable_diffusion_repo () {
     if [ -d "$DIRECTORY" ]; then
         printf "\n\n########## CHECK FOR UPDATES ##########\n\n"
         echo "Ultimate Stable Diffusion already exists. Do you want to update Ultimate Stable Diffusion?"
+        echo "(This will reset your launch arguments and they will need to be set again after updating)"
         select yn in "Yes" "No"; do
             case $yn in
                 Yes ) echo "Pulling updates for Ultimate Stable Diffusion. Please wait..."; ultimate_stable_diffusion_repo_update; break;;
@@ -46,11 +47,8 @@ ultimate_stable_diffusion_repo () {
 
 ultimate_stable_diffusion_repo_update () {
     cd $DIRECTORY
-    rm environment.yaml
-    mv environment-backup.yaml environment.yaml
-    rm ./scripts/relauncher.py
-    mv ./scripts/relauncher-backup.py ./scripts/relauncher.py
-    git pull
+    git fetch --all
+    git reset --hard origin/main
     cp ./scripts/relauncher.py ./scripts/relauncher-backup.py
     cp environment.yaml environment-backup.yaml
     sed -i 's/ldm/lsd/g' environment.yaml
@@ -214,7 +212,7 @@ ultimate_stable_diffusion_arguments () {
         select yn in "Yes" "No"; do
             case $yn in
                 Yes ) echo "Starting customization of Ultimate Stable Diffusion launch arguments..."; ultimate_stable_diffusion_arguments customize; break;;
-                No ) echo "Launching in optimized mode."; break;;
+                No ) echo "Maintaining current launch arguments..."; break;;
             esac
         done
     fi
