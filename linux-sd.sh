@@ -2,7 +2,7 @@
 
 # Linux Stable Diffusion Script
 
-# Version: 1.6.1
+# Version: 1.7
 
 # MIT License
 
@@ -10,7 +10,7 @@
 
 ##### Please See My Guide For Running This Script Here: https://rentry.org/linux-sd #####
 
-# Confirmed working as of September 1st, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
+# Confirmed working as of September 3rd, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
 # Please see my GitHub gist for updates on this script: 
 
 printf "\n\n\n"
@@ -40,6 +40,7 @@ ultimate_stable_diffusion_repo () {
         echo "Cloning Ultimate Stable Diffusion. Please wait..."
         git clone https://github.com/hlky/stable-diffusion
         mv stable-diffusion ultimate-stable-diffusion
+        cp $DIRECTORY/scripts/relauncher.py $DIRECTORY/scripts/relauncher-backup.py
     fi
 }
 
@@ -47,7 +48,10 @@ ultimate_stable_diffusion_repo_update () {
     cd $DIRECTORY
     rm environment.yaml
     mv environment-backup.yaml environment.yaml
+    rm ./scripts/relauncher.py
+    mv ./scripts/relauncher-backup.py ./scripts/relauncher.py
     git pull
+    cp ./scripts/relauncher.py ./scripts/relauncher-backup.py
     cp environment.yaml environment-backup.yaml
     sed -i 's/ldm/lsd/g' environment.yaml
     conda env update --file environment.yaml --prune
@@ -62,7 +66,6 @@ sd_model_loading () {
         #sd_model_update
     else 
         mkdir Models
-
         printf "\n\n########## MOVE MODEL FILE ##########\n\n"
         echo "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models"
         read -p "Once you have sd-v1-4.ckpt in the Models directory, Press Enter..."
@@ -122,6 +125,21 @@ post_processor_model_loading () {
         wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models
         wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models
     fi
+
+    # Check to see if LDSR has been added yet, if not it will be cloned and its models downloaded to the correct directory
+    if [ -f "$DIRECTORY/src/latent-diffusion/experiments/pretrained_models/model.ckpt" ]; then
+        echo "LDSR already exists. Continuing..."
+    else
+        echo "Cloning LDSR and downloading model. Please wait..."
+        git clone https://github.com/devilismyfriend/latent-diffusion.git
+        mv latent-diffusion $DIRECTORY/src/latent-diffusion
+        mkdir $DIRECTORY/src/latent-diffusion/experiments
+        mkdir $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
+        wget https://heibox.uni-heidelberg.de/f/31a76b13ea27482981b4/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
+        mv $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/index.html?dl=1 $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/project.yaml
+        wget https://heibox.uni-heidelberg.de/f/578df07c8fc04ffbadf3/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
+        mv $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/index.html?dl=1 $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/model.ckpt
+    fi
 }
 
 linux_setup_script () {
@@ -136,7 +154,7 @@ linux_setup_script () {
         echo "Generating linux-setup.sh in $DIRECTORY"
         touch $DIRECTORY/linux-setup.sh
         chmod +x $DIRECTORY/linux-setup.sh
-        printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\n#Check to see if model exists in the correct location with the correct name, exit if it does not.\npython scripts/relauncher.py" >> $DIRECTORY/linux-setup.sh
+        printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\npython scripts/relauncher.py" >> $DIRECTORY/linux-setup.sh
         cd ultimate-stable-diffusion
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
@@ -145,38 +163,63 @@ linux_setup_script () {
 
 # Checks to see which mode Ultimate Stable Diffusion is running in: STANDARD or OPTIMIZED
 # Then asks the user which mode they wish to use
-ultimate_stable_diffusion_mode () {
-    if [[ ! $(cat $DIRECTORY/scripts/relauncher.py | grep 'optimized') ]]; then
-        printf "\n\n########## CHOOSE ULTIMATE STABLE DIFFUSION MODE ##########\n\n"
-        echo "Ultimate Stable Diffusion is currently running in STANDARD mode."
-        echo "This results in faster inference times, at the cost of more VRAM usage (6GB minimum)."
-        printf "\n"
-        echo "Alternatively, you can run Ultimate Stable Diffusion in OPTIMIZED mode."
-        echo "This results in it being able to run on only 4GB of VRAM, at the cost of slower inference times."
-        printf "\n"
-        echo "Would you like to run Ultimate Stable Diffusion in STANDARD or OPTIMIZED mode?"
-        select yn in "Standard" "Optimized"; do
+ultimate_stable_diffusion_arguments () {
+
+    if [ "$1" = "customize" ]; then
+        printf "\n\n"
+        echo "Do you want extra upscaling models to be run on the CPU instead of the GPU to save on VRAM at the cost of speed?"
+        select yn in "Yes" "No"; do
             case $yn in
-                Standard ) echo "Launching in standard mode."; break;;
-                Optimized ) echo "Setting Ultimate Stable Diffusion to optimized mode..."; sed -i 's/python scripts\/webui.py/python scripts\/webui.py --gfpgan-cpu --esrgan-cpu --optimized/g' $DIRECTORY/scripts/relauncher.py; break;;
+                Yes ) echo "Setting extra upscaling models to use the CPU..."; sed -i 's/extra_models_cpu = False/extra_models_cpu = True/g' $DIRECTORY/scripts/relauncher.py; break;;
+                No ) echo "Extra upscaling models will run on the GPU. Continuing..."; sed -i 's/extra_models_cpu = True/extra_models_cpu = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-    else
-        printf "\n\n########## CHOOSE ULTIMATE STABLE DIFFUSION MODE ##########\n\n"
-        echo "Ultimate Stable Diffusion is currently running in OPTIMIZED mode."
-        echo "This results in it being able to run on only 4GB of VRAM, at the cost of slower inference times."
-        printf "\n"
-        echo "Alternatively, you can run Ultimate Stable Diffusion in OPTIMIZED mode."
-        echo "This results in faster inference times, at the cost of more VRAM usage (6GB minimum)."
-        printf "\n"
-        echo "Would you like to run Ultimate Stable Diffusion in STANDARD or OPTIMIZED mode?"
-        select yn in "Standard" "Optimized"; do
+        printf "\n\n"
+        echo "Do you want for Ultimate Stable Diffusion to automatically launch a new browser window or tab on first launch?"
+        select yn in "Yes" "No"; do
             case $yn in
-                Standard ) echo "Setting Ultimate Stable DIffusion to standard mode..."; sed -i 's/python scripts\/webui.py --gfpgan-cpu --esrgan-cpu --optimized/python scripts\/webui.py/g' $DIRECTORY/scripts/relauncher.py; break;;
-                Optimized ) echo "Launching in optimized mode."; break;;
+                Yes ) echo "Setting Ultimate Stable Diffusion to open a new browser window/tab at first launch..."; sed -i 's/open_in_browser = False/open_in_browser = True/g' $DIRECTORY/scripts/relauncher.py; break;;
+                No ) echo "Ultimate Stable Diffusion will not open automatically in a new browser window/tab. Continuing..."; sed -i 's/open_in_browser = True/open_in_browser = False/g' $DIRECTORY/scripts/relauncher.py; break;;
+            esac
+        done
+        printf "\n\n"
+        echo "Do you want to run Ultimate Stable Diffusion in Optimized mode - Requires only 4GB of VRAM, but is significantly slower?"
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) echo "Setting Ultimate Stable Diffusion to run in Optimized Mode..."; sed -i 's/optimized = False/optimized = True/g' $DIRECTORY/scripts/relauncher.py; break;;
+                No ) echo "Ultimate Stable Diffusion will launch in Standard Mode. Continuing..."; sed -i 's/optimized = True/optimized = False/g' $DIRECTORY/scripts/relauncher.py; break;;
+            esac
+        done
+        printf "\n\n"
+        echo "Do you want to start Ultimate Stable Diffusion in Optimized Turbo mode - Requires more VRAM than regular optimized, but is faster (incompatible with Optimized Mode)?"
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) echo "Setting Ultimate Stable Diffusion to run in Optimized Turbo mode..."; sed -i 's/optimized_turbo = False/optimized_turbo = True/g' $DIRECTORY/scripts/relauncher.py; break;;
+                No ) echo "Ultimate Stable Diffusion will launch in Standard Mode. Continuing..."; sed -i 's/optimized_turbo = True/optimized_turbo = False/g' $DIRECTORY/scripts/relauncher.py; break;;
+            esac
+        done
+        printf "\n\n"
+        echo "Do you want to create a public xxxxx.gradi.app URL to allow others to uses your interface? (Requires properly forwarded ports)"
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) echo "Setting Ultimate Stable Diffusion to open a public share URL..."; sed -i 's/share = False/share = True/g' $DIRECTORY/scripts/relauncher.py; break;;
+                No ) echo "Setting Ultimate Stable Diffusion to not open a public share URL. Continuing..."; sed -i 's/share = True/share = False/g' $DIRECTORY/scripts/relauncher.py; break;;
+            esac
+        done
+        printf "\n\nCustomization of Ultimate Stable Diffusion is complete. Continuing...\n\n"
+    else
+        printf "\n\n########## CUSTOMIZE LAUNCH ARGUMENTS ##########\n\n"
+        echo "Do you wish to customize the launch arguments for Ultimate Stable Diffusion?"
+        echo "(This will be where you select Optimized mode, auto open in browser, share to public, and more.)"
+        select yn in "Yes" "No"; do
+            case $yn in
+                Yes ) echo "Starting customization of Ultimate Stable Diffusion launch arguments..."; ultimate_stable_diffusion_arguments customize; break;;
+                No ) echo "Launching in optimized mode."; break;;
             esac
         done
     fi
+
+    
 }
 
 # Function to install and run the Ultimate Stable Diffusion fork
@@ -186,15 +229,10 @@ ultimate_stable_diffusion () {
         sd_model_loading
         conda_env_setup
         post_processor_model_loading
-        ultimate_stable_diffusion_mode
+        ultimate_stable_diffusion_arguments
         linux_setup_script
     else
         printf "\n\n########## RUN PREVIOUS SETUP ##########\n\n"
-        if [[ ! $(cat $DIRECTORY/scripts/relauncher.py | grep 'optimized') ]]; then
-            printf "Ultimate Stable Diffusion is set to run in: STANDARD MODE\n\n"
-        else
-            printf "Ultimate Stable Diffusion is set to run in: OPTIMIZED MODE\n\n"
-        fi
         echo "Do you wish to run Ultimate Stable Diffusion with the previous parameters?"
         echo "(Select NO to customize or update your Ultimate Stable Diffusion setup)"
         select yn in "Yes" "No"; do
