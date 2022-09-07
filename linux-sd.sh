@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Linux Stable Diffusion Script
-# Version: 1.8.2
+# Version: 1.8.3
 
 # MIT License
 # Copyright (c) 2022 Joshua Kimsey
@@ -41,7 +41,7 @@ ultimate_stable_diffusion_repo () {
         done
     else
         echo "Cloning Ultimate Stable Diffusion. Please wait..."
-        git clone $REPO
+        git clone --depth 1 $REPO $DIRECTORY --quiet
         cp $DIRECTORY/scripts/relauncher.py $DIRECTORY/scripts/relauncher-backup.py
     fi
 }
@@ -136,7 +136,7 @@ post_processor_model_loading () {
         echo "LDSR already exists. Continuing..."
     else
         echo "Cloning LDSR and downloading model. Please wait..."
-        git clone https://github.com/devilismyfriend/latent-diffusion.git
+        git clone --depth 1 https://github.com/devilismyfriend/latent-diffusion.git --quiet
         mv latent-diffusion $DIRECTORY/src/latent-diffusion
         mkdir $DIRECTORY/src/latent-diffusion/experiments
         mkdir $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
