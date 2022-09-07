@@ -26,30 +26,30 @@
 	- Changed: Significantly cleaned up menu options for handling customization.
     - Version 1.7.1: Changed repo updating to be less prone to issues
 
-* Version 1.6: 
+* Version 1.6:
 	- Added: Improved startup procedure to speed up start to launch times
 	- Fixed: Potential updating issue with the environment.yaml file
 
-* Version 1.5: 
+* Version 1.5:
 	- Added: Ability to load previously used parameters, speeding up launch times.
 	- Added: Foundations for loading in new Stable Diffusion AI Models once that becomes a reality.
 	- Changed: Cleaned up script code significantly.
 
-* Version 1.4: 
+* Version 1.4:
 	- Added: Choice to launch hlky's Ultimate Stable Diffusion using Standard mode for faster inference or Optimized mode for lower VRAM usage.
 	- Fixed: Significantly cleaned up code and made things prettier when running the script.
 	- Removed: Now unnecessary code for basuljindal's Optimized SD, now that hlky's version supports it instead.
 
-* Version 1.3: 
+* Version 1.3:
 	- ~~Added: Foundation for choosing which version of Stable Diffusion you would like to install and run, Ultimate or Optimized.~~
 	- Fixed: Code layout using functions now.
 	- Broken: Optimized won't install correctly and I'm not sure why, currently a WIP. (Update: No Longer an issue)
 
-* Version 1.2: 
-	- Added the ability to choose to update from the hlky SD repo at the start of the script. 
+* Version 1.2:
+	- Added the ability to choose to update from the hlky SD repo at the start of the script.
 	- Fixed potential env naming issue in generated script. Please delete your `linux-setup.sh` file inside of the stable-diffusion directory before running the new script
 
-* Version 1.1: 
+* Version 1.1:
 	- Added support for realESRGAN feature added to the hlky GitHub repo
 
 * Version 1.0: Initial Release
@@ -58,14 +58,14 @@
 **Note:** This guide assumes you have installed Anaconda already, and have it set up properly. If you have not, please visit the [Anaconda](https://www.anaconda.com/products/distribution) website to download the file for your system and install it.
 
 **WARNING: Multiple Linux users have reported issues using this script, and potentially Stable Diffusion in general, with Miniconda. As such, I can not recommend using it due to these issues with unknown causes. Please use the full release of Anaconda instead.**
- 
+
 **Step 1:** Create a folder/directory on your system and place this [script](https://github.com/JoshuaKimsey/Linux-StableDiffusion-Script/blob/main/linux-sd.sh) in it, named `linux-sd.sh`. This directory will be where the files for Stable Diffusion will be downloaded.
 
 **Step 2:** Download the 1.4 AI model from HuggingFace (or another location, the original guide has some links to mirrors of the model) and place it in the same directory as the script.
 
 **Step 3:** Make the script executable by opening the directory in your Terminal and typing `chmod +x linux-sd.sh`, or whatever you named this file as.
 
-**Step 4:** Run the script with `./linux-sd.sh`, it will begin by cloning the [WebUI Github Repo](https://github.com/sd-webui/stable-diffusion-webui) to the directory the script is located in. This folder will be named `stable-diffusion-webui`.  
+**Step 4:** Run the script with `./linux-sd.sh`, it will begin by cloning the [WebUI Github Repo](https://github.com/sd-webui/stable-diffusion-webui) to the directory the script is located in. This folder will be named `stable-diffusion-webui`.
 
 **Step 5:** The script will pause and ask that you move/copy the downloaded 1.4 AI models to a newly created, **temporary** directory called `Models`. Press Enter once you have done so to continue.
 
@@ -92,7 +92,7 @@ The user will have the ability to set these to yes or no using the menu choices.
 
 **On first launch this process may take a bit longer than on successive runs, but shouldn't take as long as building the Conda environment did.**
 
-**Step 10:** I everything has gone successfully, you should see `Running on local URL:  http://localhost:7860/` in your Terminal. Copy that and open it in your browser and you should now have access to the Gradio interface for Stable Diffusion! Generated images will be located in the `outputs` directory inside of `ultimate-stable-diffusion`. Enjoy the definitive Ultimate Stable Diffusion Experience on Linux! :)
+**Step 10:** If everything has gone successfully, you should see `Running on local URL:  http://localhost:7860/` in your Terminal. Copy that and open it in your browser and you should now have access to the Gradio interface for Stable Diffusion! Generated images will be located in the `outputs` directory inside of `ultimate-stable-diffusion`. Enjoy the definitive Ultimate Stable Diffusion Experience on Linux! :)
 
 ## Ultimate Stable Diffusion Customizations
 

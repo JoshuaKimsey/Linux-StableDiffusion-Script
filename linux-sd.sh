@@ -1,27 +1,26 @@
 #!/bin/bash
 
 # Linux Stable Diffusion Script
-
-# Version: 1.8.1
+# Version: 1.8.2
 
 # MIT License
-
 # Copyright (c) 2022 Joshua Kimsey
 
 ##### Please See My Guide For Running This Script Here: https://rentry.org/linux-sd #####
 
 # Confirmed working as of September 6th, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
-# Please see my GitHub gist for updates on this script: 
+# Please see my GitHub gist for updates on this script:
 
-printf "\n\n\n"
+echo
+echo
 echo "WELCOME TO THE ULTIMATE STABLE DIFFUSION WEB GUI ON LINUX"
-printf "\n\n"
+echo
 echo "The definitive Stable Diffusion experience™ Now 100% Linux Compatible!"
-printf "\n"
+echo
 echo "Please ensure you have Anaconda installed properly on your Linux system before running this."
-printf "\n"
+echo
 echo "Please refer to the original guide for more info and additional links for this project: https://rentry.org/guitard"
-printf "\n\n"
+echo
 
 DIRECTORY=./stable-diffusion-webui
 REPO=https://github.com/sd-webui/stable-diffusion-webui.git
@@ -29,7 +28,9 @@ REPO=https://github.com/sd-webui/stable-diffusion-webui.git
 ultimate_stable_diffusion_repo () {
     # Check to see if Ultimate Stable Diffusion repo is cloned
     if [ -d "$DIRECTORY" ]; then
-        printf "\n\n########## CHECK FOR UPDATES ##########\n\n"
+        echo
+        echo "########## CHECK FOR UPDATES ##########"
+        echo
         echo "Ultimate Stable Diffusion already exists. Do you want to update Ultimate Stable Diffusion?"
         echo "(This will reset your launch arguments and they will need to be set again after updating)"
         select yn in "Yes" "No"; do
@@ -62,12 +63,14 @@ sd_model_loading () {
         echo "AI Model already in place."
         # Will be enabled once new AI Models are released
         #sd_model_update
-    else 
+    else
         mkdir Models
-        printf "\n\n########## MOVE MODEL FILE ##########\n\n"
+        echo
+        echo "########## MOVE MODEL FILE ##########"
+        echo
         echo "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models"
         read -p "Once you have sd-v1-4.ckpt in the Models directory, Press Enter..."
-        
+
         # Check to make sure checksum of models is the original one from HuggingFace and not a fake model set
         echo "fe4efff1e174c627256e44ec2991ba279b3816e364b49f9be2abc0b3ff3f8556 ./Models/sd-v1-4.ckpt" | sha256sum --check || exit 1
         mv ./Models/sd-v1-4.ckpt $DIRECTORY/models/ldm/stable-diffusion-v1/model.ckpt
@@ -76,7 +79,9 @@ sd_model_loading () {
 }
 
 sd_model_update () {
-    printf "\n\n########## Update Stable Diffusion Models ##########\n\n"
+    echo
+    echo "########## Update Stable Diffusion Models ##########"
+    echo
     echo "Do you wish to load a new/different Stable Diffusion AI Model?"
     echo "Warning: This will DELETE the pre-existing model.ckpt present in Ultimate Stable Diffusion!"
     select yn in "Yes" "No"; do
@@ -95,7 +100,9 @@ conda_env_setup () {
     else
         echo "Creating conda environment for Linux StableDiffusion (LSD). Please wait..."
         if [[ $(conda env list | grep 'lsd') = lsd* ]]; then
-            printf "\n\n########## DELETE OLD CONDA ENVIRONMENT ##########\n\n" 
+            echo
+            printf "########## DELETE OLD CONDA ENVIRONMENT ##########"
+            echo
             echo "You already have a conda env called lsd, this will delete that environment and create a new one for Linux Stable Diffusion"
             read -p "If you do not wish to delete the conda env: lsd, please press CTRL-C. Otherwise, press Enter to continue..."
             conda env remove -n lsd
@@ -149,11 +156,10 @@ linux_setup_script () {
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
     else
-        echo "Generating linux-setup.sh in $DIRECTORY"
-        touch $DIRECTORY/linux-setup.sh
-        chmod +x $DIRECTORY/linux-setup.sh
-        printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\npython scripts/relauncher.py" >> $DIRECTORY/linux-setup.sh
         cd $DIRECTORY
+        echo "Generating linux-setup.sh"
+        echo -e "#!/bin/bash\n\n# MIT License\n# Copyright (c) 2022 Joshua Kimsey\n\n# Activate the conda environment\nconda activate lsd\n\n# Start the relauncher #\npython scripts/relauncher.py" > ./linux-setup.sh
+        chmod +x ./linux-setup.sh
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
     fi
@@ -163,7 +169,7 @@ linux_setup_script () {
 # Then asks the user which mode they wish to use
 ultimate_stable_diffusion_arguments () {
     if [ "$1" = "customize" ]; then
-        printf "\n\n"
+        echo
         echo "Do you want extra upscaling models to be run on the CPU instead of the GPU to save on VRAM at the cost of speed?"
         select yn in "Yes" "No"; do
             case $yn in
@@ -171,7 +177,7 @@ ultimate_stable_diffusion_arguments () {
                 No ) echo "Extra upscaling models will run on the GPU. Continuing..."; sed -i 's/extra_models_cpu = True/extra_models_cpu = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-        printf "\n\n"
+        echo
         echo "Do you want for Ultimate Stable Diffusion to automatically launch a new browser window or tab on first launch?"
         select yn in "Yes" "No"; do
             case $yn in
@@ -179,7 +185,7 @@ ultimate_stable_diffusion_arguments () {
                 No ) echo "Ultimate Stable Diffusion will not open automatically in a new browser window/tab. Continuing..."; sed -i 's/open_in_browser = True/open_in_browser = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-        printf "\n\n"
+        echo
         echo "Do you want to run Ultimate Stable Diffusion in Optimized mode - Requires only 4GB of VRAM, but is significantly slower?"
         select yn in "Yes" "No"; do
             case $yn in
@@ -187,7 +193,7 @@ ultimate_stable_diffusion_arguments () {
                 No ) echo "Ultimate Stable Diffusion will launch in Standard Mode. Continuing..."; sed -i 's/optimized = True/optimized = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-        printf "\n\n"
+        echo
         echo "Do you want to start Ultimate Stable Diffusion in Optimized Turbo mode - Requires more VRAM than regular optimized, but is faster (incompatible with Optimized Mode)?"
         select yn in "Yes" "No"; do
             case $yn in
@@ -195,7 +201,7 @@ ultimate_stable_diffusion_arguments () {
                 No ) echo "Ultimate Stable Diffusion will launch in Standard Mode. Continuing..."; sed -i 's/optimized_turbo = True/optimized_turbo = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-        printf "\n\n"
+        echo
         echo "Do you want to create a public xxxxx.gradi.app URL to allow others to uses your interface? (Requires properly forwarded ports)"
         select yn in "Yes" "No"; do
             case $yn in
@@ -203,9 +209,13 @@ ultimate_stable_diffusion_arguments () {
                 No ) echo "Setting Ultimate Stable Diffusion to not open a public share URL. Continuing..."; sed -i 's/share = True/share = False/g' $DIRECTORY/scripts/relauncher.py; break;;
             esac
         done
-        printf "\n\nCustomization of Ultimate Stable Diffusion is complete. Continuing...\n\n"
+        echo
+        printf "Customization of Ultimate Stable Diffusion is complete. Continuing..."
+        echo
     else
-        printf "\n\n########## CUSTOMIZE LAUNCH ARGUMENTS ##########\n\n"
+        echo
+        echo "########## CUSTOMIZE LAUNCH ARGUMENTS ##########"
+        echo
         echo "Do you wish to customize the launch arguments for Ultimate Stable Diffusion?"
         echo "(This will be where you select Optimized mode, auto open in browser, share to public, and more.)"
         select yn in "Yes" "No"; do
@@ -215,8 +225,6 @@ ultimate_stable_diffusion_arguments () {
             esac
         done
     fi
-
-    
 }
 
 # Function to install and run the Ultimate Stable Diffusion fork
@@ -229,7 +237,9 @@ ultimate_stable_diffusion () {
         ultimate_stable_diffusion_arguments
         linux_setup_script
     else
-        printf "\n\n########## RUN PREVIOUS SETUP ##########\n\n"
+        echo
+        echo "########## RUN PREVIOUS SETUP ##########"
+        echo
         echo "Do you wish to run Ultimate Stable Diffusion with the previous parameters?"
         echo "(Select NO to customize or update your Ultimate Stable Diffusion setup)"
         select yn in "Yes" "No"; do
@@ -241,10 +251,9 @@ ultimate_stable_diffusion () {
     fi
 }
 
-# Initialization 
+# Initialization
 if [ ! -d "$DIRECTORY" ]; then
     echo "Starting Ultimate Stable Diffusion installation..."
-    printf "\n"
     ultimate_stable_diffusion initial
 else
     ultimate_stable_diffusion
