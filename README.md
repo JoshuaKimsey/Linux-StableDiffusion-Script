@@ -63,21 +63,23 @@
 
 **Step 2:** Download the 1.4 AI model from HuggingFace (or another location, the original guide has some links to mirrors of the model) and place it in the same directory as the script.
 
-**Step 3:** Run the script with `./linux-sd.sh`, it will begin by cloning the [WebUI Github Repo](https://github.com/sd-webui/stable-diffusion-webui) to the directory the script is located in. This folder will be named `stable-diffusion-webui`.
+**Step 3:** Make the script executable by opening the directory in your Terminal and typing `chmod +x linux-sd.sh`, or whatever you named this file as.
 
-**Step 4:** The script will pause and ask that you move/copy the downloaded 1.4 AI models to a newly created, **temporary** directory called `Models`. Press Enter once you have done so to continue.
+**Step 4:** Run the script with `./linux-sd.sh`, it will begin by cloning the [WebUI Github Repo](https://github.com/sd-webui/stable-diffusion-webui) to the directory the script is located in. This folder will be named `stable-diffusion-webui`.
+
+**Step 5:** The script will pause and ask that you move/copy the downloaded 1.4 AI models to a newly created, **temporary** directory called `Models`. Press Enter once you have done so to continue.
 
 **If you are running low on storage space, you can just move the 1.4 AI models file directly to this directory, it will not be deleted, simply moved and renamed. However my personal suggestion is to just **copy** it to the Models folder, in case you desire to delete and rebuild your Ultimate Stable Diffusion build again.**
 
-**Step 5:** The script will then proceed to generate the Conda environment for the project. It will be created using the name `lsd` (not a mistake ;) ), which is short for `Linux Stable Diffusion`.
+**Step 6:** The script will then proceed to generate the Conda environment for the project. It will be created using the name `lsd` (not a mistake ;) ), which is short for `Linux Stable Diffusion`.
 
 **If a Conda environment of this name already exists, it will ask you before deleting it. If you do not wish to continue, press `CTRL-C` to exit the program. Otherwise, press Enter to continue.**
 
 **Building the Conda environment may take upwards of 15 minutes, depending on your network connection and system specs. This is normal, just leave it be and let it finish.**
 
-**Step 6:** Once the Conda environment has been created successfully, GFPGAN, realESRGAN, and LDSR upscaler models will be downloaded and placed in their correct location automatically.
+**Step 7:** Once the Conda environment has been created successfully, GFPGAN, realESRGAN, and LDSR upscaler models will be downloaded and placed in their correct location automatically.
 
-**Step 7:** Next, the script will ask if you wish to customize any of the launch arguments for Ultimate Stable Diffusion. IF yes, then a series of options will be presented to the user:
+**Step 8:** Next, the script will ask if you wish to customize any of the launch arguments for Ultimate Stable Diffusion. IF yes, then a series of options will be presented to the user:
 	- Use the CPU for Extra Upscaler Models to save on VRAM
 	- Automatically open a new browser window or tab on first launch
 	- Use Optimized mode for Ultimate Stable Diffusion, which only requires 4GB of VRAM at the cost of speed
@@ -86,13 +88,11 @@
 
 The user will have the ability to set these to yes or no using the menu choices.
 
-**Step 8:** After this, the last step is the script will, at first launch, generate another script within the `ultimate-stable-diffusion` directory, which will be called via BASH in interactive mode to launch Stable Diffusion itself. This is necessary due to oddities with how Conda handles being executed from scripts. This second script launches the python file that begins to run the web gui for Ultimate Stable Diffusion.
+**Step 9:** After this, the last step is the script will, at first launch, generate another script within the `ultimate-stable-diffusion` directory, which will be called via BASH in interactive mode to launch Stable Diffusion itself. This is necessary due to oddities with how Conda handles being executed from scripts. This second script launches the python file that begins to run the web gui for Ultimate Stable Diffusion.
 
 **On first launch this process may take a bit longer than on successive runs, but shouldn't take as long as building the Conda environment did.**
 
-**Step 9:** If everything has gone successfully, you should see `Running on local URL:  http://localhost:7860/` in your Terminal. Copy that and open it in your browser and you should now have access to the Gradio interface for Stable Diffusion! Generated images will be located in the `outputs` directory inside of `ultimate-stable-diffusion`.
-
-**Step 10:** Enjoy the definitive Ultimate Stable Diffusion Experience on Linux!! :D
+**Step 10:** If everything has gone successfully, you should see `Running on local URL:  http://localhost:7860/` in your Terminal. Copy that and open it in your browser and you should now have access to the Gradio interface for Stable Diffusion! Generated images will be located in the `outputs` directory inside of `ultimate-stable-diffusion`. Enjoy the definitive Ultimate Stable Diffusion Experience on Linux!! :D
 
 ## Ultimate Stable Diffusion Customizations
 
