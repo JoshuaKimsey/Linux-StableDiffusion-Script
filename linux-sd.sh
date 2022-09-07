@@ -2,7 +2,7 @@
 
 # Linux Stable Diffusion Script
 
-# Version: 1.8
+# Version: 1.8.1
 
 # MIT License
 
@@ -41,7 +41,6 @@ ultimate_stable_diffusion_repo () {
     else
         echo "Cloning Ultimate Stable Diffusion. Please wait..."
         git clone $REPO
-        mv stable-diffusion ultimate-stable-diffusion
         cp $DIRECTORY/scripts/relauncher.py $DIRECTORY/scripts/relauncher-backup.py
     fi
 }
@@ -154,7 +153,7 @@ linux_setup_script () {
         touch $DIRECTORY/linux-setup.sh
         chmod +x $DIRECTORY/linux-setup.sh
         printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\npython scripts/relauncher.py" >> $DIRECTORY/linux-setup.sh
-        cd ultimate-stable-diffusion
+        cd $DIRECTORY
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
     fi
