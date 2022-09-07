@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Linux Stable Diffusion Script
-# Version: 1.8.3
+# Version: 1.8.4
 
 # MIT License
 # Copyright (c) 2022 Joshua Kimsey
@@ -22,13 +22,15 @@ echo
 echo "Please refer to the original guide for more info and additional links for this project: https://rentry.org/guitard"
 echo
 
+if [[ $1 = "-q" || $1 = "--quiet" ]]; then QUIET="--quiet"; else QUIET=""; fi
+
 DIRECTORY=./stable-diffusion-webui
 REPO=https://github.com/sd-webui/stable-diffusion-webui.git
 
 ultimate_stable_diffusion_repo () {
     # Check to see if Ultimate Stable Diffusion repo is cloned
     if [ -d "$DIRECTORY" ]; then
-        echo
+        echo; echo
         echo "########## CHECK FOR UPDATES ##########"
         echo
         echo "Ultimate Stable Diffusion already exists. Do you want to update Ultimate Stable Diffusion?"
@@ -41,7 +43,7 @@ ultimate_stable_diffusion_repo () {
         done
     else
         echo "Cloning Ultimate Stable Diffusion. Please wait..."
-        git clone --depth 1 $REPO $DIRECTORY --quiet
+        git clone --depth 1 $REPO $DIRECTORY $QUIET
         cp $DIRECTORY/scripts/relauncher.py $DIRECTORY/scripts/relauncher-backup.py
     fi
 }
@@ -65,7 +67,7 @@ sd_model_loading () {
         #sd_model_update
     else
         mkdir Models
-        echo
+        echo; echo
         echo "########## MOVE MODEL FILE ##########"
         echo
         echo "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models"
@@ -79,7 +81,7 @@ sd_model_loading () {
 }
 
 sd_model_update () {
-    echo
+    echo; echo
     echo "########## Update Stable Diffusion Models ##########"
     echo
     echo "Do you wish to load a new/different Stable Diffusion AI Model?"
@@ -100,8 +102,8 @@ conda_env_setup () {
     else
         echo "Creating conda environment for Linux StableDiffusion (LSD). Please wait..."
         if [[ $(conda env list | grep 'lsd') = lsd* ]]; then
-            echo
-            printf "########## DELETE OLD CONDA ENVIRONMENT ##########"
+            echo; echo
+            echo "########## DELETE OLD CONDA ENVIRONMENT ##########"
             echo
             echo "You already have a conda env called lsd, this will delete that environment and create a new one for Linux Stable Diffusion"
             read -p "If you do not wish to delete the conda env: lsd, please press CTRL-C. Otherwise, press Enter to continue..."
@@ -119,7 +121,7 @@ post_processor_model_loading () {
         echo "GFPGAN already exists. Continuing..."
     else
         echo "Downloading GFPGAN model. Please wait..."
-        wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P $DIRECTORY/src/gfpgan/experiments/pretrained_models
+        wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P $DIRECTORY/src/gfpgan/experiments/pretrained_models $QUIET
     fi
 
     # Check to see if realESRGAN has been added yet, if not it will download it and place it in the proper directory
@@ -127,8 +129,8 @@ post_processor_model_loading () {
         echo "realESRGAN already exists. Continuing..."
     else
         echo "Downloading realESRGAN model. Please wait..."
-        wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models
-        wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models
+        wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models $QUIET
+        wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P $DIRECTORY/src/realesrgan/experiments/pretrained_models $QUIET
     fi
 
     # Check to see if LDSR has been added yet, if not it will be cloned and its models downloaded to the correct directory
@@ -136,13 +138,13 @@ post_processor_model_loading () {
         echo "LDSR already exists. Continuing..."
     else
         echo "Cloning LDSR and downloading model. Please wait..."
-        git clone --depth 1 https://github.com/devilismyfriend/latent-diffusion.git --quiet
+        git clone --depth 1 https://github.com/devilismyfriend/latent-diffusion.git $QUIET
         mv latent-diffusion $DIRECTORY/src/latent-diffusion
         mkdir $DIRECTORY/src/latent-diffusion/experiments
         mkdir $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
-        wget https://heibox.uni-heidelberg.de/f/31a76b13ea27482981b4/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
+        wget https://heibox.uni-heidelberg.de/f/31a76b13ea27482981b4/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models $QUIET
         mv $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/index.html?dl=1 $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/project.yaml
-        wget https://heibox.uni-heidelberg.de/f/578df07c8fc04ffbadf3/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models
+        wget https://heibox.uni-heidelberg.de/f/578df07c8fc04ffbadf3/?dl=1 -P $DIRECTORY/src/latent-diffusion/experiments/pretrained_models $QUIET
         mv $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/index.html?dl=1 $DIRECTORY/src/latent-diffusion/experiments/pretrained_models/model.ckpt
     fi
 }
@@ -158,7 +160,7 @@ linux_setup_script () {
     else
         cd $DIRECTORY
         echo "Generating linux-setup.sh"
-        echo -e "#!/bin/bash\n\n# MIT License\n# Copyright (c) 2022 Joshua Kimsey\n\n# Activate the conda environment\nconda activate lsd\n\n# Start the relauncher #\npython scripts/relauncher.py" > ./linux-setup.sh
+        echo -e "#!/bin/bash\n\n# MIT License\n# Copyright (c) 2022 Joshua Kimsey\n\n# Activate the conda environment\nconda activate lsd\n\n# Start the relauncher\npython scripts/relauncher.py" > ./linux-setup.sh
         chmod +x ./linux-setup.sh
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
@@ -213,7 +215,7 @@ ultimate_stable_diffusion_arguments () {
         printf "Customization of Ultimate Stable Diffusion is complete. Continuing..."
         echo
     else
-        echo
+        echo; echo
         echo "########## CUSTOMIZE LAUNCH ARGUMENTS ##########"
         echo
         echo "Do you wish to customize the launch arguments for Ultimate Stable Diffusion?"
@@ -237,7 +239,7 @@ ultimate_stable_diffusion () {
         ultimate_stable_diffusion_arguments
         linux_setup_script
     else
-        echo
+        echo; echo
         echo "########## RUN PREVIOUS SETUP ##########"
         echo
         echo "Do you wish to run Ultimate Stable Diffusion with the previous parameters?"
