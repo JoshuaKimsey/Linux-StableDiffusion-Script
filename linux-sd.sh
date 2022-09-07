@@ -2,7 +2,7 @@
 
 # Linux Stable Diffusion Script
 
-# Version: 1.7.1
+# Version: 1.8
 
 # MIT License
 
@@ -10,11 +10,11 @@
 
 ##### Please See My Guide For Running This Script Here: https://rentry.org/linux-sd #####
 
-# Confirmed working as of September 3rd, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
+# Confirmed working as of September 6th, 2022. May be subject to breakage at a later date due to bleeding-edge updates in hlky's Stable Diffusion fork repo
 # Please see my GitHub gist for updates on this script: 
 
 printf "\n\n\n"
-echo "WELCOME TO THE ULTIMATE STABLE DIFFUSION GUI ON LINUX"
+echo "WELCOME TO THE ULTIMATE STABLE DIFFUSION WEB GUI ON LINUX"
 printf "\n\n"
 echo "The definitive Stable Diffusion experience™ Now 100% Linux Compatible!"
 printf "\n"
@@ -23,7 +23,8 @@ printf "\n"
 echo "Please refer to the original guide for more info and additional links for this project: https://rentry.org/guitard"
 printf "\n\n"
 
-DIRECTORY=./ultimate-stable-diffusion
+DIRECTORY=./stable-diffusion-webui
+REPO=https://github.com/sd-webui/stable-diffusion-webui.git
 
 ultimate_stable_diffusion_repo () {
     # Check to see if Ultimate Stable Diffusion repo is cloned
@@ -39,7 +40,7 @@ ultimate_stable_diffusion_repo () {
         done
     else
         echo "Cloning Ultimate Stable Diffusion. Please wait..."
-        git clone https://github.com/hlky/stable-diffusion
+        git clone $REPO
         mv stable-diffusion ultimate-stable-diffusion
         cp $DIRECTORY/scripts/relauncher.py $DIRECTORY/scripts/relauncher-backup.py
     fi
@@ -48,7 +49,7 @@ ultimate_stable_diffusion_repo () {
 ultimate_stable_diffusion_repo_update () {
     cd $DIRECTORY
     git fetch --all
-    git reset --hard origin/main
+    git reset --hard origin/master
     cp ./scripts/relauncher.py ./scripts/relauncher-backup.py
     cp environment.yaml environment-backup.yaml
     sed -i 's/ldm/lsd/g' environment.yaml
@@ -145,7 +146,7 @@ linux_setup_script () {
     # If it does, it executes using bash in interactive mode due to issues with conda activation
     # If it does not exist, it generates the file and makes it executable
     if [ -f "$DIRECTORY/linux-setup.sh" ]; then
-        cd ultimate-stable-diffusion
+        cd $DIRECTORY
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
     else
@@ -162,7 +163,6 @@ linux_setup_script () {
 # Checks to see which mode Ultimate Stable Diffusion is running in: STANDARD or OPTIMIZED
 # Then asks the user which mode they wish to use
 ultimate_stable_diffusion_arguments () {
-
     if [ "$1" = "customize" ]; then
         printf "\n\n"
         echo "Do you want extra upscaling models to be run on the CPU instead of the GPU to save on VRAM at the cost of speed?"
