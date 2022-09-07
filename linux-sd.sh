@@ -154,7 +154,7 @@ linux_setup_script () {
         touch $DIRECTORY/linux-setup.sh
         chmod +x $DIRECTORY/linux-setup.sh
         printf "#!/bin/bash\n\n#MIT License\n\n#Copyright (c) 2022 Joshua Kimsey\n\n\n##### CONDA ENVIRONMENT ACTIVATION #####\n\n# Activate The Conda Environment\nconda activate lsd\n\n\n##### PYTHON HANDLING #####\n\npython scripts/relauncher.py" >> $DIRECTORY/linux-setup.sh
-        cd ultimate-stable-diffusion
+        cd stable-diffusion-webui
         echo "Running linux-setup.sh..."
         bash -i ./linux-setup.sh
     fi
