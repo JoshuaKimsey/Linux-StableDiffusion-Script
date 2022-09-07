@@ -15,6 +15,11 @@
 
 **PLEASE NOTE: In order to upgrade to version 1.7 or later of this script, you must delete your pre-existing `ultimate-stable-diffusion` folder and do a clean re-install using the script. You can copy your `outputs` folder in there to save it elsewhere and then add it back once the re-install is done. Also, make sure your original 1.4 models are saved somewhere, or else you will need to re-download them from Hugging Face. The models file can be found in `ultimate-stable-diffusion/models/ldm/stablediffusion-v1/Model.ckpt`, if you do not have them saved elsewhere. Rename it to `sd-v1-4.ckpt` to make them work as expected with the script.**
 
+**Please Note: Version 1.8 and above now make use of the unified Stable-Diffusion WebUI repo on GitHub. Your old outputs are safe in the `ultimate-stable-diffusion` folder as a new folder will be generated for this unified repo. Feel free to copy your outputs folder from `ultimate-stable-diffusion` over to the new `stable-diffusion-webui` folder. Don't forget the model weights inside of `ultimate-stable-diffusion` as well, if you don't have them saved elsewhere. Once this is done, you may safely delete the `ultimate-stable-diffusion` folder, as it is no longer used or needed.**
+
+* Version 1.8:
+	- Added: Support for newly unified {Stable Diffusion WebUI}(https://github.com/sd-webui/stable-diffusion-webui) GitHub repo.
+
 * Version 1.7:
 	- Added: New arguments manager for `relauncher.py`.
 	- Added: Handling for LDSR upsclaer setup.
@@ -60,7 +65,7 @@
 
 **Step 3:** Make the script executable by opening the directory in your Terminal and typing `chmod +x linux-sd.sh`, or whatever you named this file as.
 
-**Step 4:** Run the script with `./linux-sd.sh`, it will begin by cloning [hlky's Github Repo](https://github.com/hlky/stable-diffusion) to the directory the script is located in. The cloned `stable-diffusion` directory will be renamed to `ultimate-stable-diffusion` to avoid any naming confusion. 
+**Step 4:** Run the script with `./linux-sd.sh`, it will begin by cloning the [WebUI Github Repo](https://github.com/sd-webui/stable-diffusion-webui) to the directory the script is located in. This folder will be named `stable-diffusion-webui`.  
 
 **Step 5:** The script will pause and ask that you move/copy the downloaded 1.4 AI models to a newly created, **temporary** directory called `Models`. Press Enter once you have done so to continue.
 
@@ -95,11 +100,11 @@ When running the script again after the initial use, the user will be presented 
 
 If the user choose to Customize their setup, then they will be presented with these options on how to customize their Ultimate Stable Diffusion setup:
 
-- Update hlky's Stable Diffusion fork from the GitHub Repo
+- Update the Stable Diffusion WebUI fork from the GitHub Repo
 - Load a new Stable Diffusion AI Model ==Currently Disabled. Will be enabled once multiple Stable Diffusion AI Models becomes a reality.==
 - Customize the launch arguments for Ultimate Stable Diffusion (See Above)
 
-### Refer back to the original [guide](https://rentry.org/guitard) for useful tips and links to other resources that can improve your Stable Diffusion experience
+### Refer back to the original [guide](https://rentry.org/guitard) (potentially outdated now) for useful tips and links to other resources that can improve your Stable Diffusion experience
 
 ## Planned Additions
 - Investigate ways to handle Anaconda/Miniconda automatic installation on a user's system.
