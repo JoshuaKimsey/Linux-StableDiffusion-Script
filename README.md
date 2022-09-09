@@ -17,6 +17,11 @@
 
 **Please Note: Version 1.8 and above now make use of the unified Stable-Diffusion WebUI repo on GitHub. Your old outputs are safe in the `ultimate-stable-diffusion` folder as a new folder will be generated for this unified repo. Feel free to copy your outputs folder from `ultimate-stable-diffusion` over to the new `stable-diffusion-webui` folder. Don't forget the model weights inside of `ultimate-stable-diffusion` as well, if you don't have them saved elsewhere. Once this is done, you may safely delete the `ultimate-stable-diffusion` folder, as it is no longer used or needed.**
 
+* Version 1.9:
+	- Changed: `echo` to `printf` for consistency.
+	- Fixed #7 hopefully.
+	- Note: This will hopefully be the last major update before the update of the Stable Diffusion WebUI to use the better StreamIt UI instead of Gradio.
+
 * Version 1.8:
 	- Added: Support for newly unified {Stable Diffusion WebUI}(https://github.com/sd-webui/stable-diffusion-webui) GitHub repo.
 
