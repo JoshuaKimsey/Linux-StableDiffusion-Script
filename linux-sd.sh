@@ -66,7 +66,7 @@ sd_model_loading () {
     else 
         mkdir Models
         printf "\n\n########## MOVE MODEL FILE ##########\n\n"
-        printf "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models"
+        printf "Please download the 1.4 AI Model from Huggingface (or another source) and move or copy it in the newly created directory: Models\n\n"
         read -p "Once you have sd-v1-4.ckpt in the Models directory, Press Enter..."
         
         # Check to make sure checksum of models is the original one from HuggingFace and not a fake model set
