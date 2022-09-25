@@ -110,7 +110,7 @@ gradio_stable_diffusion_arguments () {
         printf "(This will be where you select Optimized mode, auto open in browser, share to public, and more.)\n"
         select yn in "Yes" "No"; do
             case $yn in
-                Yes ) printf "Starting customization of Gradio Interface launch arguments...\n"; ultimate_stable_diffusion_arguments customize; break;;
+                Yes ) printf "Starting customization of Gradio Interface launch arguments...\n"; gradio_stable_diffusion_arguments customize; break;;
                 No ) printf "Maintaining current Gradio Interface launch arguments...\n"; break;;
             esac
         done
