@@ -106,7 +106,7 @@ gradio_stable_diffusion_arguments () {
         printf "\n\nCustomization of Ultimate Stable Diffusion is complete. Continuing...\n\n"
     else
         printf "\n\n########## GRADIO CUSTOMIZATION ##########\nPlease Note: These Arguments Only Affect The Gradio Interface Version Of The Stable Diffusion Webui.\n\n"
-        printf "Do you wish to customize the luanch arguments for the Gradio Webui Interface?\n"
+        printf "Do you wish to customize the launch arguments for the Gradio Webui Interface?\n"
         printf "(This will be where you select Optimized mode, auto open in browser, share to public, and more.)\n"
         select yn in "Yes" "No"; do
             case $yn in
